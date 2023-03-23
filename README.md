@@ -1,0 +1,1 @@
+This is the repository for my CS6110 project, an implementation and extension of the paper "Attack resistant Leader Election in Social Overlay Networks by Leveraging Local Voting".
