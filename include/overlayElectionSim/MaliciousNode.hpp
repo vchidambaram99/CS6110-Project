@@ -5,16 +5,11 @@
 
 class MaliciousNode : public Node {
 public:
-	MaliciousNode(Network* network, uint32_t id, uint32_t candidates);
+	MaliciousNode(uint32_t id, uint32_t numCandidates, uint32_t diameter);
 	virtual ~MaliciousNode();
 
 	void init() override;
-
-	NodeState* vote(uint32_t round) override;
-	void setNodeState(NodeState* state) override;
-
-private:
-	uint32_t m_candidates;
+	void vote(uint32_t round, std::vector<uint32_t>& rCandidates, std::vector<uint32_t>& rTimestamps) override;
 };
 
 #endif // _MALICIOUS_NODE_HPP

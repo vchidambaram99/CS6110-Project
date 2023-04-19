@@ -4,25 +4,24 @@
 #include "overlayElectionSim/ThreeMajorityNode.hpp"
 #include "overlayElectionSim/VoteCounter.hpp"
 
-ThreeMajorityNode::ThreeMajorityNode(Network* network, uint32_t id) : Node(network, id) {}
+ThreeMajorityNode::ThreeMajorityNode(uint32_t id, uint32_t numCandidates, uint32_t diameter) : Node(id, numCandidates, diameter) {}
 ThreeMajorityNode::~ThreeMajorityNode() {}
 
 void ThreeMajorityNode::init() {
-	m_state = new NodeState(std::vector<uint32_t>{m_id}, std::vector<uint32_t>{0});
+	m_candidates = std::vector<uint32_t>{m_id};
+	m_timestamps = std::vector<uint32_t>{0};
 }
 
-NodeState* ThreeMajorityNode::vote(uint32_t round) {
-	std::vector<NodeState*> validVotes;
+void ThreeMajorityNode::vote(uint32_t round, std::vector<uint32_t>& rCandidates, std::vector<uint32_t>& rTimestamps) {
+	std::vector<Node*> validVotes;
 	std::unordered_map<uint32_t, uint32_t> timestamps;
 	timestamps[m_id] = round;
-	uint32_t diameter = m_network->getGraph().diameter();
-	for (uint32_t neighbor : m_network->getGraph().neighbors(m_id)) {
-		NodeState* vote = m_network->getNode(neighbor)->getNodeState();
-		uint32_t candidate = vote->getCandidate(0);
-		uint32_t timestamp = vote->getTimestamp(0);
-		if (round - timestamp <= diameter)
+	for (Node* neighbor : m_neighbors) {
+		uint32_t candidate = neighbor->getCandidate(0);
+		uint32_t timestamp = neighbor->getTimestamp(0);
+		if (round - timestamp <= m_diameter)
 		{
-			validVotes.push_back(vote);
+			validVotes.push_back(neighbor);
 			timestamps[candidate] = std::max(timestamp, timestamps[candidate]);
 		}
 	}
@@ -37,8 +36,10 @@ NodeState* ThreeMajorityNode::vote(uint32_t round) {
 		uint32_t leader = counter.winner(0);
 		uint32_t leaderTimestamp = timestamps[leader];
 
-		return new NodeState(std::vector<uint32_t>{leader}, std::vector<uint32_t>{leaderTimestamp});
+		rCandidates = std::vector<uint32_t>{leader};
+		rTimestamps = std::vector<uint32_t>{leaderTimestamp};
 	} else {
-		return new NodeState(std::vector<uint32_t>{m_id}, std::vector<uint32_t>{round});
+		rCandidates = std::vector<uint32_t>{m_id};
+		rTimestamps = std::vector<uint32_t>{round};
 	}
 }

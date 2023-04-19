@@ -6,39 +6,27 @@
 
 class Network;
 
-class NodeState
-{
-public:
-	NodeState(std::vector<uint32_t>&& candidates, std::vector<uint32_t>&& timestamps);
-	~NodeState();
-
-	uint32_t size() const;
-	uint32_t getCandidate(uint32_t i) const;
-	uint32_t getTimestamp(uint32_t i) const;
-
-	void setCandidate(uint32_t i, uint32_t candidate);
-	void setTimestamp(uint32_t i, uint32_t timestamp);
-
-private:
-	std::vector<uint32_t> m_candidates;
-	std::vector<uint32_t> m_timestamps;
-};
-
 class Node {
 public:
-	Node(Network* network, uint32_t id);
+	Node(uint32_t id, uint32_t numCandidates, uint32_t diameter);
 	virtual ~Node();
 
 	virtual void init() = 0;
+	virtual void vote(uint32_t round, std::vector<uint32_t>& rCandidates, std::vector<uint32_t>& rTimestamps) = 0;
 
-	virtual NodeState* vote(uint32_t round) = 0;
-	virtual NodeState* getNodeState();
-	virtual void setNodeState(NodeState* state);
+	void setNodeState(std::vector<uint32_t>&& candidates, std::vector<uint32_t>&& timestamps);
+	void addNeighbor(Node* neighbor);
+	uint32_t getSize();
+	uint32_t getCandidate(uint32_t i);
+	uint32_t getTimestamp(uint32_t i);
 
 protected:
-	Network* m_network;
+	std::vector<Node*> m_neighbors;
 	uint32_t m_id;
-	NodeState* m_state;
+	uint32_t m_diameter;
+	uint32_t m_numCandidates;
+	std::vector<uint32_t> m_candidates;
+	std::vector<uint32_t> m_timestamps;
 };
 
 #endif // _NODE_HPP

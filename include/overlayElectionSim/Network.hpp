@@ -20,18 +20,18 @@ struct Statistics {
 
 class Network {
 public:
-	typedef std::function<Node*(Network*, uint32_t)> NodeFactory;
-	Network(const std::string& filename, NodeFactory f);
+	typedef std::function<Node*(uint32_t, uint32_t, uint32_t)> NodeFactory;
+	Network(const std::string& filename, NodeFactory f, uint32_t candidates);
 	~Network();
 
-	Node* getNode(uint32_t id);
 	const Graph& getGraph();
 
 	uint32_t addMaliciousNode(uint32_t edges, uint32_t candidates);
 
 	const Statistics& getStatistics();
 	const Statistics& stepSimulation();
-private:
+
+private:	
 	Statistics m_stats;
 	Graph m_graph;
 	std::vector<Node*> m_nodes;
