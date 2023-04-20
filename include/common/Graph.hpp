@@ -8,6 +8,7 @@
 class Graph {
 public:
 	Graph();
+	Graph(std::vector<std::vector<uint32_t>>&& adjacencyList);
 	~Graph();
 	bool load(const std::string& filename);
 	bool store(const std::string& filename) const;

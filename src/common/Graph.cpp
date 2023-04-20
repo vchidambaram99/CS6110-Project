@@ -17,6 +17,8 @@ void write32(std::ofstream& file, uint32_t value) {
 
 Graph::Graph() : m_adjacencyList(), m_diameter(0) {}
 
+Graph::Graph(std::vector<std::vector<uint32_t>>&& adjacencyList) : m_adjacencyList(std::move(adjacencyList)) {}
+
 Graph::~Graph() {}
 
 bool Graph::load(const std::string& filename) {
