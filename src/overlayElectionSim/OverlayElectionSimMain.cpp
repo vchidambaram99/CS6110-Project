@@ -79,13 +79,11 @@ int main(int argc, char** argv) {
 
 	seedRandomGenerator(seed);
 	Network n(graphFile, nodeFactory, numCandidates);
-	if (attackEdges != 0) {
-		uint32_t maliciousNode = n.addMaliciousNode(attackEdges, numCandidates);
-		if (verbose) {
-			printf("Malicious node was %u\n", maliciousNode);
-		} else {
-			printf("%u\n", maliciousNode);
-		}
+	uint32_t maliciousNode = n.addMaliciousNode(attackEdges, numCandidates);
+	if (verbose) {
+		printf("Malicious node was %u\n", maliciousNode);
+	} else {
+		printf("%u\n", maliciousNode);
 	}
 
 	for (uint32_t i = 0; i < rounds; ++i) {
